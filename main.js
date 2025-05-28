@@ -199,7 +199,7 @@ function addBall(pitch, pitchType) {
     t0: t0,
     release: {
       x: -pitch.release_pos_x,
-      y: pitch.release_pos_z + 0.8,
+      y: pitch.release_pos_z + 1.2,
       z: -2.03
     },
     velocity: {
