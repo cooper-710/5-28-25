@@ -12,11 +12,22 @@ async function loadPitchData() {
 
 function createHalfColorMaterial(pitchType) {
   const colorMap = {
-    FF: '#FF0000', SL: '#0000FF', CH: '#00FF00', KC: '#4B0082',
-    SI: '#8B4513', CU: '#8A2BE2', FC: '#FF8C00', ST: '#800000',
-    FS: '#008B8B', EP: '#FFD700', KN: '#AAAAAA', SC: '#E9967A',
-    SV: '#F08080', CS: '#A52A2A', FO: '#DAA520'
-  };
+  FF: '#FF0000',   // Red
+  SL: '#0000FF',   // Blue
+  CH: '#008000',   // Green
+  KC: '#4B0082',   // Indigo
+  SI: '#FFA500',   // Orange
+  CU: '#800080',   // Purple
+  FC: '#808080',   // Gray
+  ST: '#008080',   // Teal
+  FS: '#00CED1',   // DarkTurquoise
+  EP: '#FF69B4',   // HotPink
+  KN: '#A9A9A9',   // DarkGray
+  SC: '#708090',   // SlateGray
+  SV: '#000000',   // Black
+  CS: '#A52A2A',   // Brown
+  FO: '#DAA520'    // GoldenRod
+};
   const hex = colorMap[pitchType] || '#888888';
 
   const canvas = document.createElement('canvas');
