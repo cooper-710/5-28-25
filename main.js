@@ -12,22 +12,25 @@ async function loadPitchData() {
 
 function createHalfColorMaterial(pitchType) {
   const pitchColors = {
-  FF: '#FF0000',
-  FT: '#8B0000',
-  SI: '#FFA500',
-  FC: '#808080',
-  SL: '#0000FF',
-  ST: '#008080',
-  CU: '#800080',
-  KC: '#4B0082',
-  CH: '#008000',
-  FS: '#4682B4',
-  FO: '#B22222',
-  CS: '#9370DB',
-  KN: '#FFFF00',
-  EP: '#A0522D',
-  SV: '#20B2AA'
-};
+    'FF': '#FF0000',  # Four-Seam Fastball
+    'FT': '#8B0000',  # Two-Seam Fastball
+    'SI': '#FFA500',  # Sinker
+    'FC': '#808080',  # Cutter
+    'SL': '#0000FF',  # Slider
+    'CU': '#800080',  # Curveball
+    'SV': '#4682B4',  # Slurve
+    'ST': '#008080',  # Sweeper
+    'CH': '#008000',  # Changeup
+    'FS': '#00FFFF',  # Splitter
+    'KC': '#4B0082',  # Knuckle Curve
+    'KN': '#D3D3D3',  # Knuckleball
+    'EP': '#FFC0CB',  # Eephus
+    'FO': '#00008B',  # Forkball
+    'SC': '#FF00FF',  # Screwball
+    'PO': '#A52A2A',  # Pitch Out
+    'IN': '#F0E68C',  # Intentional Ball
+    'UN': '#B0C4DE',  # Unknown
+        };
   const hex = colorMap[pitchType] || '#888888';
 
   const canvas = document.createElement('canvas');
