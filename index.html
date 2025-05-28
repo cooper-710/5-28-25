@@ -5,20 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MLB Pitch Visualizer</title>
   <style>
-    html, body {
+    body {
       margin: 0;
-      padding: 0;
       overflow: hidden;
-      font-family: 'Segoe UI', sans-serif;
       background-color: #111;
+      font-family: 'Segoe UI', sans-serif;
     }
-
     canvas {
       display: block;
-      width: 100%;
-      height: 100%;
     }
-
     #controls {
       position: absolute;
       top: 12px;
@@ -30,26 +25,21 @@
       max-width: 90vw;
       color: white;
     }
-
     select, button {
       padding: 6px 10px;
       margin: 4px 4px 4px 0;
       border-radius: 6px;
       border: none;
       font-size: 14px;
-      background: #333;
-      color: white;
-      font-family: 'Segoe UI', sans-serif;
+      background: #00cccc;
+      color: black;
     }
-
     #pitchCheckboxes {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
-      max-width: 100%;
       padding-top: 6px;
     }
-
     .checkbox-group {
       display: flex;
       align-items: center;
@@ -58,42 +48,21 @@
       padding: 4px 8px;
       border-radius: 6px;
     }
-
-    .checkbox-group:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
     .checkbox-group label {
       font-weight: 500;
       cursor: pointer;
-      color: white;
-    }
-
-    @media (max-width: 600px) {
-      #controls {
-        font-size: 12px;
-        padding: 8px;
-        top: auto;
-        bottom: 12px;
-        left: 12px;
-        right: 12px;
-      }
-
-      #pitchCheckboxes {
-        gap: 4px;
-      }
     }
   </style>
 </head>
 <body>
   <div id="controls">
     <div>
-      <select id="teamSelect">
-        <option disabled selected>Select Team</option>
-      </select>
-      <select id="pitcherSelect">
-        <option disabled selected>Select Pitcher</option>
-      </select>
+      <label for="teamSelect">Team:</label>
+      <select id="teamSelect"></select>
+    </div>
+    <div>
+      <label for="pitcherSelect">Pitcher:</label>
+      <select id="pitcherSelect"></select>
     </div>
     <div id="pitchCheckboxes"></div>
     <div style="margin-top: 8px;">
