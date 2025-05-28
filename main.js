@@ -1,5 +1,72 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.148.0/build/three.module.js';
 
+// === UI Styling (Professional + Mobile-Responsive) ===
+const style = document.createElement('style');
+style.innerHTML = `
+  #pitchCheckboxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    max-width: 100%;
+    padding: 8px;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    margin-top: 8px;
+  }
+  .checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: background 0.3s;
+  }
+  .checkbox-group:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  .checkbox-group label {
+    font-weight: 500;
+    cursor: pointer;
+  }
+  select, button {
+    padding: 6px 10px;
+    margin: 4px;
+    border-radius: 6px;
+    border: none;
+    font-size: 14px;
+    background: #333;
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  #controls {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 12px;
+    border-radius: 10px;
+    z-index: 100;
+    max-width: 90vw;
+  }
+  @media (max-width: 600px) {
+    #controls {
+      font-size: 12px;
+      padding: 8px;
+      top: auto;
+      bottom: 12px;
+      left: 12px;
+      right: 12px;
+    }
+    #pitchCheckboxes {
+      gap: 4px;
+    }
+  }
+`;
+document.head.appendChild(style);
+
 let scene, camera, renderer, pitchData = {}, balls = [];
 let activeTypes = new Set(), playing = true;
 let lastTime = 0;
@@ -12,22 +79,12 @@ async function loadPitchData() {
 
 function createHalfColorMaterial(pitchType) {
   const colorMap = {
-  FF: '#FF0000',   // Red
-  SL: '#0000FF',   // Blue
-  CH: '#008000',   // Green
-  KC: '#4B0082',   // Indigo
-  SI: '#FFA500',   // Orange
-  CU: '#800080',   // Purple
-  FC: '#808080',   // Gray
-  ST: '#008080',   // Teal
-  FS: '#00CED1',   // DarkTurquoise
-  EP: '#FF69B4',   // HotPink
-  KN: '#A9A9A9',   // DarkGray
-  SC: '#708090',   // SlateGray
-  SV: '#000000',   // Black
-  CS: '#A52A2A',   // Brown
-  FO: '#DAA520'    // GoldenRod
-};
+    FF: '#FF0000', SL: '#0000FF', CH: '#008000', KC: '#4B0082',
+    SI: '#FFA500', CU: '#800080', FC: '#808080', ST: '#008080',
+    FS: '#00CED1', EP: '#FF69B4', KN: '#A9A9A9', SC: '#708090',
+    SV: '#000000', CS: '#A52A2A', FO: '#DAA520'
+  };
+
 
   const hex = colorMap[pitchType] || '#888888';
 
