@@ -11,22 +11,22 @@ async function loadPitchData() {
 }
 
 function createHalfColorMaterial(pitchType) {
-  const colorMap = {
-  FF: '#FF0000',   // Red
-  SL: '#0000FF',   // Blue
-  CH: '#008000',   // Green
-  KC: '#4B0082',   // Indigo
-  SI: '#FFA500',   // Orange
-  CU: '#800080',   // Purple
-  FC: '#808080',   // Gray
-  ST: '#008080',   // Teal
-  FS: '#00CED1',   // DarkTurquoise
-  EP: '#FF69B4',   // HotPink
-  KN: '#A9A9A9',   // DarkGray
-  SC: '#708090',   // SlateGray
-  SV: '#000000',   // Black
-  CS: '#A52A2A',   // Brown
-  FO: '#DAA520'    // GoldenRod
+  const pitchColors = {
+  FF: '#FF0000',
+  FT: '#8B0000',
+  SI: '#FFA500',
+  FC: '#808080',
+  SL: '#0000FF',
+  ST: '#008080',
+  CU: '#800080',
+  KC: '#4B0082',
+  CH: '#008000',
+  FS: '#4682B4',
+  FO: '#B22222',
+  CS: '#9370DB',
+  KN: '#FFFF00',
+  EP: '#A0522D',
+  SV: '#20B2AA'
 };
   const hex = colorMap[pitchType] || '#888888';
 
