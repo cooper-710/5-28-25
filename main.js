@@ -1,4 +1,3 @@
-
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.148.0/build/three.module.js';
 
 let scene, camera, renderer, pitchData = {}, balls = [];
@@ -38,6 +37,11 @@ function createHalfColorMaterial(pitchType) {
     roughness: 0.4,
     metalness: 0.1
   });
+}
+
+function getSpinAxisVector(degrees) {
+  const radians = THREE.MathUtils.degToRad(degrees);
+  return new THREE.Vector3(Math.cos(radians), 0, Math.sin(radians)).normalize();
 }
 
 function setupScene() {
@@ -178,6 +182,9 @@ function addBall(pitch, pitchType) {
 
   const t0 = clock.getElapsedTime();
 
+  const spinRate = pitch.release_spin_rate || 0;
+  const spinAxis = getSpinAxisVector(pitch.spin_axis || 0);
+
   ball.userData = {
     type: pitchType,
     t0: t0,
@@ -195,7 +202,9 @@ function addBall(pitch, pitchType) {
       x: -pitch.ax,
       y: pitch.az,
       z: pitch.ay
-    }
+    },
+    spinRate: spinRate,
+    spinAxis: spinAxis
   };
 
   ball.position.set(
@@ -222,16 +231,21 @@ function animate() {
   const now = clock.getElapsedTime();
   if (playing) {
     for (let ball of balls) {
-      const { t0, release, velocity, accel } = ball.userData;
+      const { t0, release, velocity, accel, spinRate, spinAxis } = ball.userData;
       const t = now - t0;
       const z = release.z + velocity.z * t + 0.5 * accel.z * t * t;
       if (z <= -60.5) continue;
       ball.position.x = release.x + velocity.x * t + 0.5 * accel.x * t * t;
       ball.position.y = release.y + velocity.y * t + 0.5 * accel.y * t * t;
       ball.position.z = z;
+
+      if (spinRate > 0) {
+        const radPerSec = (spinRate / 60) * 2 * Math.PI;
+        const angleDelta = radPerSec * clock.getDelta();
+        ball.rotateOnAxis(spinAxis, angleDelta);
+      }
     }
   }
-
   renderer.render(scene, camera);
   requestAnimationFrame(animate);
 }
