@@ -2,77 +2,69 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MLB Pitch Visualizer</title>
   <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-      background-color: #111;
-      font-family: 'Segoe UI', sans-serif;
-    }
-    canvas {
-      display: block;
-    }
-    #controls {
+    body { margin: 0; overflow: hidden; font-family: sans-serif; }
+    canvas { display: block; }
+
+    #ui {
       position: absolute;
-      top: 12px;
-      left: 12px;
-      background: rgba(0, 0, 0, 0.4);
-      padding: 12px;
-      border-radius: 10px;
-      z-index: 100;
-      max-width: 90vw;
+      top: 20px;
+      left: 20px;
+      z-index: 10;
+      background: rgba(0, 0, 0, 0.8);
       color: white;
+      padding: 12px;
+      border-radius: 8px;
+      border: 2px solid #00ffff;
+      max-height: 90vh;
+      overflow-y: auto;
+      width: 240px;
     }
-    select, button {
-      padding: 6px 10px;
-      margin: 4px 4px 4px 0;
-      border-radius: 6px;
-      border: none;
+
+    #ui label, select {
+      display: block;
+      margin: 8px 0 4px;
+    }
+
+    #ui button {
+      margin-top: 10px;
+      padding: 8px 14px;
       font-size: 14px;
-      background: #00cccc;
-      color: black;
-    }
-    #pitchCheckboxes {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      padding-top: 6px;
-    }
-    .checkbox-group {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      background: rgba(255, 255, 255, 0.05);
-      padding: 4px 8px;
-      border-radius: 6px;
-    }
-    .checkbox-group label {
-      font-weight: 500;
+      border: none;
+      background: #00ffff;
+      color: #000;
+      border-radius: 4px;
       cursor: pointer;
+      width: 100px;
+    }
+
+    #ui button:hover {
+      background: #00dddd;
+    }
+
+    #pitchCheckboxes label {
+      margin-left: 6px;
+    }
+
+    .checkbox-group {
+      margin: 4px 0;
     }
   </style>
 </head>
 <body>
-  <div id="controls">
-    <div>
-      <label for="teamSelect">Team:</label>
-      <select id="teamSelect"></select>
-    </div>
-    <div>
-      <label for="pitcherSelect">Pitcher:</label>
-      <select id="pitcherSelect"></select>
-    </div>
+  <div id="ui">
+    <label for="teamSelect">Team:</label>
+    <select id="teamSelect"></select>
+    <label for="pitcherSelect">Pitcher:</label>
+    <select id="pitcherSelect"></select>
     <div id="pitchCheckboxes"></div>
-    <div style="margin-top: 8px;">
+    <div style="display: flex; gap: 10px;">
       <button id="toggleBtn">Pause</button>
       <button id="replayBtn">Replay</button>
     </div>
   </div>
-
   <canvas id="three-canvas"></canvas>
-
-  <script type="module" src="main.js"></script>
+  <script type="module" src="./main.js"></script>
 </body>
 </html>
