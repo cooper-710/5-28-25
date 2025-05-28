@@ -2,6 +2,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.148.0/build/three.m
 
 let scene, camera, renderer, pitchData = {}, balls = [];
 let activeTypes = new Set(), playing = true;
+let lastTime = 0;
 const clock = new THREE.Clock();
 
 async function loadPitchData() {
@@ -222,15 +223,18 @@ function removeBall(pitchType) {
     return true;
   });
 }
-
 function animate() {
+  requestAnimationFrame(animate);
+
   const now = clock.getElapsedTime();
-  const delta = clock.getDelta();
+  const delta = now - lastTime;
+  lastTime = now;
 
   if (playing) {
     for (let ball of balls) {
       const { t0, release, velocity, accel, spinRate, spinAxis } = ball.userData;
       const t = now - t0;
+
       const z = release.z + velocity.z * t + 0.5 * accel.z * t * t;
       if (z <= -60.5) continue;
 
@@ -241,13 +245,12 @@ function animate() {
       if (spinRate > 0) {
         const radPerSec = (spinRate / 60) * 2 * Math.PI;
         const angleDelta = radPerSec * delta;
-        ball.rotateOnAxis(spinAxis, angleDelta);
+        ball.rotateOnAxis(spinAxis.clone().normalize(), angleDelta);
       }
     }
   }
 
   renderer.render(scene, camera);
-  requestAnimationFrame(animate);
 }
 
 document.getElementById('toggleBtn').addEventListener('click', () => {
