@@ -101,7 +101,6 @@ function setupScene() {
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
 }
-
 function clearBalls() {
   for (let ball of balls) scene.remove(ball);
   balls = [];
@@ -182,9 +181,6 @@ function addBall(pitch, pitchType) {
 
   const t0 = clock.getElapsedTime();
 
-  const spinRate = pitch.release_spin_rate || 0;
-  const spinAxis = getSpinAxisVector(pitch.spin_axis || 0);
-
   ball.userData = {
     type: pitchType,
     t0: t0,
@@ -203,8 +199,8 @@ function addBall(pitch, pitchType) {
       y: pitch.az,
       z: pitch.ay
     },
-    spinRate: spinRate,
-    spinAxis: spinAxis
+    spinRate: pitch.release_spin_rate || 0,
+    spinAxis: getSpinAxisVector(pitch.spin_axis || 0)
   };
 
   ball.position.set(
@@ -229,23 +225,27 @@ function removeBall(pitchType) {
 
 function animate() {
   const now = clock.getElapsedTime();
+  const delta = clock.getDelta();
+
   if (playing) {
     for (let ball of balls) {
       const { t0, release, velocity, accel, spinRate, spinAxis } = ball.userData;
       const t = now - t0;
       const z = release.z + velocity.z * t + 0.5 * accel.z * t * t;
       if (z <= -60.5) continue;
+
       ball.position.x = release.x + velocity.x * t + 0.5 * accel.x * t * t;
       ball.position.y = release.y + velocity.y * t + 0.5 * accel.y * t * t;
       ball.position.z = z;
 
       if (spinRate > 0) {
         const radPerSec = (spinRate / 60) * 2 * Math.PI;
-        const angleDelta = radPerSec * clock.getDelta();
+        const angleDelta = radPerSec * delta;
         ball.rotateOnAxis(spinAxis, angleDelta);
       }
     }
   }
+
   renderer.render(scene, camera);
   requestAnimationFrame(animate);
 }
