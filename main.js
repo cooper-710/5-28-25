@@ -1,5 +1,69 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.148.0/build/three.module.js';
 
+// === UI Styling (Professional + Mobile-Responsive) ===
+const style = document.createElement('style');
+style.innerHTML = `
+  #pitchCheckboxes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 4px 8px;
+    border-radius: 6px;
+  }
+  .checkbox-group label {
+    font-size: 13px;
+  }
+  label {
+    font-size: 14px;
+    display: block;
+    margin-bottom: 4px;
+  }
+  select, button {
+    width: 100%;
+    padding: 6px 10px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+    border: none;
+    font-size: 14px;
+    background: #333;
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  #controls {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 16px;
+    border-radius: 12px;
+    z-index: 100;
+    max-width: 90vw;
+    color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  }
+  @media (max-width: 600px) {
+    #controls {
+      font-size: 12px;
+      padding: 12px;
+      top: auto;
+      bottom: 12px;
+      left: 12px;
+      right: 12px;
+    }
+    select, button {
+      font-size: 13px;
+    }
+  }
+`;
+document.head.appendChild(style);
+
 let scene, camera, renderer, pitchData = {}, balls = [];
 let activeTypes = new Set(), playing = true;
 let lastTime = 0;
@@ -9,25 +73,13 @@ async function loadPitchData() {
   const res = await fetch('./pitch_data.json');
   return await res.json();
 }
-
 function createHalfColorMaterial(pitchType) {
   const colorMap = {
-  FF: '#FF0000',   // Red
-  SL: '#0000FF',   // Blue
-  CH: '#008000',   // Green
-  KC: '#4B0082',   // Indigo
-  SI: '#FFA500',   // Orange
-  CU: '#800080',   // Purple
-  FC: '#808080',   // Gray
-  ST: '#008080',   // Teal
-  FS: '#00CED1',   // DarkTurquoise
-  EP: '#FF69B4',   // HotPink
-  KN: '#A9A9A9',   // DarkGray
-  SC: '#708090',   // SlateGray
-  SV: '#000000',   // Black
-  CS: '#A52A2A',   // Brown
-  FO: '#DAA520'    // GoldenRod
-};
+    FF: '#FF0000', SL: '#0000FF', CH: '#008000', KC: '#4B0082',
+    SI: '#FFA500', CU: '#800080', FC: '#808080', ST: '#008080',
+    FS: '#00CED1', EP: '#FF69B4', KN: '#A9A9A9', SC: '#708090',
+    SV: '#000000', CS: '#A52A2A', FO: '#DAA520'
+  };
 
   const hex = colorMap[pitchType] || '#888888';
 
@@ -114,6 +166,7 @@ function setupScene() {
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
 }
+
 function clearBalls() {
   for (let ball of balls) scene.remove(ball);
   balls = [];
@@ -151,7 +204,6 @@ function addCheckboxes(pitcherData, pitcher) {
     container.appendChild(wrapper);
   }
 }
-
 function populateDropdowns(data) {
   const teamSelect = document.getElementById('teamSelect');
   const pitcherSelect = document.getElementById('pitcherSelect');
@@ -199,7 +251,7 @@ function addBall(pitch, pitchType) {
     t0: t0,
     release: {
       x: -pitch.release_pos_x,
-      y: pitch.release_pos_z + 1,
+      y: pitch.release_pos_z + 0.65,
       z: -2.03
     },
     velocity: {
@@ -235,6 +287,7 @@ function removeBall(pitchType) {
     return true;
   });
 }
+
 function animate() {
   requestAnimationFrame(animate);
 
@@ -265,6 +318,7 @@ function animate() {
   renderer.render(scene, camera);
 }
 
+// === UI Buttons ===
 document.getElementById('toggleBtn').addEventListener('click', () => {
   playing = !playing;
   document.getElementById('toggleBtn').textContent = playing ? 'Pause' : 'Play';
@@ -282,6 +336,7 @@ document.getElementById('replayBtn').addEventListener('click', () => {
   }
 });
 
+// === Init ===
 (async () => {
   setupScene();
   pitchData = await loadPitchData();
