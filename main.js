@@ -1,78 +1,16 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.148.0/build/three.module.js';
 
-// === UI Styling (Professional + Mobile-Responsive) ===
-const style = document.createElement('style');
-style.innerHTML = `
-  #pitchCheckboxes {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-    gap: 6px;
-    margin-bottom: 12px;
-  }
-  .checkbox-group {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(255, 255, 255, 0.05);
-    padding: 4px 8px;
-    border-radius: 6px;
-  }
-  .checkbox-group label {
-    font-size: 13px;
-  }
-  label {
-    font-size: 14px;
-    display: block;
-    margin-bottom: 4px;
-  }
-  select, button {
-    width: 100%;
-    padding: 6px 10px;
-    margin-bottom: 12px;
-    border-radius: 6px;
-    border: none;
-    font-size: 14px;
-    background: #333;
-    color: white;
-    font-family: 'Segoe UI', sans-serif;
-  }
-  #controls {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    background: rgba(0, 0, 0, 0.4);
-    padding: 16px;
-    border-radius: 12px;
-    z-index: 100;
-    max-width: 90vw;
-    color: white;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  }
-  @media (max-width: 600px) {
-    #controls {
-      font-size: 12px;
-      padding: 12px;
-      top: auto;
-      bottom: 12px;
-      left: 12px;
-      right: 12px;
-    }
-    select, button {
-      font-size: 13px;
-    }
-  }
-`;
-document.head.appendChild(style);
-
 let scene, camera, renderer, pitchData = {}, balls = [];
 let activeTypes = new Set(), playing = true;
 let lastTime = 0;
 const clock = new THREE.Clock();
+let selectedEndZone = {};
 
 async function loadPitchData() {
   const res = await fetch('./pitch_data.json');
   return await res.json();
 }
+
 function createHalfColorMaterial(pitchType) {
   const colorMap = {
     FF: '#FF0000', SL: '#0000FF', CH: '#008000', KC: '#4B0082',
@@ -166,17 +104,20 @@ function setupScene() {
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
 }
-
 function clearBalls() {
   for (let ball of balls) scene.remove(ball);
   balls = [];
   activeTypes.clear();
   document.getElementById('pitchCheckboxes').innerHTML = '';
+  document.getElementById('zoneSelectors').innerHTML = '';
 }
 
 function addCheckboxes(pitcherData, pitcher) {
-  const container = document.getElementById('pitchCheckboxes');
+  const checkboxContainer = document.getElementById('pitchCheckboxes');
+  const zoneContainer = document.getElementById('zoneSelectors');
+
   for (let type in pitcherData[pitcher]) {
+    // Checkbox
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.id = type;
@@ -200,10 +141,27 @@ function addCheckboxes(pitcherData, pitcher) {
     wrapper.className = 'checkbox-group';
     wrapper.appendChild(checkbox);
     wrapper.appendChild(label);
+    checkboxContainer.appendChild(wrapper);
 
-    container.appendChild(wrapper);
+    // Dropdown for zone 1–9
+    const zoneSelect = document.createElement('select');
+    zoneSelect.id = `zone-${type}`;
+    zoneSelect.innerHTML = `<option value="">Zone for ${type}</option>`;
+    for (let i = 1; i <= 9; i++) {
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = `Zone ${i}`;
+      zoneSelect.appendChild(opt);
+    }
+    zoneSelect.addEventListener('change', () => {
+      const val = parseInt(zoneSelect.value);
+      if (!isNaN(val)) selectedEndZone[type] = val;
+    });
+
+    zoneContainer.appendChild(zoneSelect);
   }
 }
+
 function populateDropdowns(data) {
   const teamSelect = document.getElementById('teamSelect');
   const pitcherSelect = document.getElementById('pitcherSelect');
@@ -237,6 +195,19 @@ function populateDropdowns(data) {
   teamSelect.selectedIndex = 0;
   teamSelect.dispatchEvent(new Event('change'));
 }
+// Zone locations 1–9 (approximate strike zone grid)
+const zoneMap = {
+  1: { x: -0.5, y: 3.3 },
+  2: { x: 0,    y: 3.3 },
+  3: { x: 0.5,  y: 3.3 },
+  4: { x: -0.5, y: 2.5 },
+  5: { x: 0,    y: 2.5 },
+  6: { x: 0.5,  y: 2.5 },
+  7: { x: -0.5, y: 1.7 },
+  8: { x: 0,    y: 1.7 },
+  9: { x: 0.5,  y: 1.7 }
+};
+const selectedEndZone = {};
 
 function addBall(pitch, pitchType) {
   const ballGeo = new THREE.SphereGeometry(0.145, 32, 32);
@@ -245,6 +216,22 @@ function addBall(pitch, pitchType) {
   ball.castShadow = true;
 
   const t0 = clock.getElapsedTime();
+
+  const zone = selectedEndZone[pitchType];
+  let targetZ = -60.5;
+  let endX = null, endY = null;
+
+  if (zone && zoneMap[zone]) {
+    endX = zoneMap[zone].x;
+    endY = zoneMap[zone].y;
+
+    const timeToTarget = Math.sqrt((targetZ - -2.03) * 2 / pitch.vy0);
+    const vx0 = (endX + pitch.release_pos_x) / timeToTarget - 0.5 * pitch.ax * timeToTarget;
+    const vz0 = (endY - pitch.release_pos_z - 0.65) / timeToTarget - 0.5 * pitch.az * timeToTarget;
+
+    pitch.vx0 = -vx0;
+    pitch.vz0 = vz0;
+  }
 
   ball.userData = {
     type: pitchType,
@@ -318,7 +305,7 @@ function animate() {
   renderer.render(scene, camera);
 }
 
-// === UI Buttons ===
+// UI Button Listeners
 document.getElementById('toggleBtn').addEventListener('click', () => {
   playing = !playing;
   document.getElementById('toggleBtn').textContent = playing ? 'Pause' : 'Play';
