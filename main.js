@@ -176,34 +176,56 @@ function clearBalls() {
 
 function addCheckboxes(pitcherData, pitcher) {
   const container = document.getElementById('pitchCheckboxes');
+  const zoneMap = [...Array(14).keys()].map(i => i + 1); // [1, 2, ..., 14]
+
   for (let type in pitcherData[pitcher]) {
+    // Create checkbox
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.id = type;
     checkbox.checked = false;
 
-    checkbox.addEventListener('change', () => {
-      if (checkbox.checked) {
-        activeTypes.add(type);
-        addBall(pitcherData[pitcher][type], type);
-      } else {
-        activeTypes.delete(type);
-        removeBall(type);
-      }
-    });
-
+    // Create label
     const label = document.createElement('label');
     label.htmlFor = type;
     label.textContent = type;
 
+    // Create zone selector
+    const zoneSelect = document.createElement('select');
+    zoneSelect.id = `zone-${type}`;
+    zoneSelect.disabled = true;
+
+    for (let z of zoneMap) {
+      const opt = document.createElement('option');
+      opt.value = z;
+      opt.textContent = `Zone ${z}`;
+      zoneSelect.appendChild(opt);
+    }
+
+    // Toggle activation
+    checkbox.addEventListener('change', () => {
+      if (checkbox.checked) {
+        activeTypes.add(type);
+        zoneSelect.disabled = false;
+        addBall(pitcherData[pitcher][type], type);
+      } else {
+        activeTypes.delete(type);
+        zoneSelect.disabled = true;
+        removeBall(type);
+      }
+    });
+
+    // Wrapper layout
     const wrapper = document.createElement('div');
     wrapper.className = 'checkbox-group';
     wrapper.appendChild(checkbox);
     wrapper.appendChild(label);
+    wrapper.appendChild(zoneSelect);
 
     container.appendChild(wrapper);
   }
 }
+
 function populateDropdowns(data) {
   const teamSelect = document.getElementById('teamSelect');
   const pitcherSelect = document.getElementById('pitcherSelect');
