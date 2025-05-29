@@ -1,0 +1,21 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>3D Pitch Visualizer</title>
+  <style>
+    body { margin: 0; overflow: hidden; background: #000; color: white; font-family: sans-serif; }
+    #ui { position: absolute; top: 10px; left: 10px; z-index: 100; background: rgba(0,0,0,0.6); padding: 10px; border-radius: 8px; }
+    label { display: block; margin-bottom: 5px; }
+    select { width: 100%; }
+  </style>
+</head>
+<body>
+  <div id="ui">
+    <div id="pitchTypeCheckboxes"></div>
+    <button id="playPause">Pause</button>
+  </div>
+  <script type="module" src="main.js"></script>
+</body>
+</html>
