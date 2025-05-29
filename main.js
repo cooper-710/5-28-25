@@ -3,6 +3,40 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.148.0/build/three.m
 // === UI Styling (Professional + Mobile-Responsive) ===
 const style = document.createElement('style');
 style.innerHTML = `
+style.innerHTML += `
+  #zoneGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 36px);
+    grid-template-rows: repeat(5, 36px);
+    gap: 4px;
+    margin-top: 12px;
+    padding: 6px;
+    border: 1px solid #999;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.05);
+    justify-content: start;
+    width: max-content;
+  }
+  .zone {
+    background: #222;
+    color: #fff;
+    border: 1px solid #aaa;
+    text-align: center;
+    line-height: 36px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .zone:hover {
+    background: #0a84ff;
+  }
+  .filler {
+    background: transparent;
+    border: none;
+    cursor: default;
+  }
+`;
+
   #pitchCheckboxes {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
@@ -268,6 +302,15 @@ function populateDropdowns(data) {
   teamSelect.selectedIndex = 0;
   teamSelect.dispatchEvent(new Event('change'));
 }
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.zone').forEach(el => {
+    el.addEventListener('click', () => {
+      const zone = el.getAttribute('data-zone');
+      if (zone) handleZoneClick(zone);
+    });
+  });
+});
+
 
 function addBall(pitch, pitchType) {
   const ballGeo = new THREE.SphereGeometry(0.145, 32, 32);
