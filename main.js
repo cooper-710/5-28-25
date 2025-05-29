@@ -66,6 +66,8 @@ document.head.appendChild(style);
 
 let scene, camera, renderer, pitchData = {}, balls = [];
 let activeTypes = new Set(), playing = true;
+let currentPitchType = null;
+let zoneSelections = {};  // e.g., { 'FF': 5, 'SL': 8 }
 let lastTime = 0;
 const clock = new THREE.Clock();
 
@@ -176,7 +178,8 @@ function clearBalls() {
 
 function addCheckboxes(pitcherData, pitcher) {
   const container = document.getElementById('pitchCheckboxes');
-  const zoneMap = [...Array(14).keys()].map(i => i + 1); // [1, 2, ..., 14]
+  container.innerHTML = '';
+  currentPitchType = null;
 
   for (let type in pitcherData[pitcher]) {
     // Create checkbox
@@ -185,45 +188,51 @@ function addCheckboxes(pitcherData, pitcher) {
     checkbox.id = type;
     checkbox.checked = false;
 
-    // Create label
+    // Label
     const label = document.createElement('label');
     label.htmlFor = type;
     label.textContent = type;
 
-    // Create zone selector
-    const zoneSelect = document.createElement('select');
-    zoneSelect.id = `zone-${type}`;
-    zoneSelect.disabled = true;
+    // Zone display
+    const zoneLabel = document.createElement('span');
+    zoneLabel.className = 'zone-label';
+    zoneLabel.textContent = 'No Zone';
 
-    for (let z of zoneMap) {
-      const opt = document.createElement('option');
-      opt.value = z;
-      opt.textContent = `Zone ${z}`;
-      zoneSelect.appendChild(opt);
-    }
-
-    // Toggle activation
+    // Toggle logic
     checkbox.addEventListener('change', () => {
       if (checkbox.checked) {
         activeTypes.add(type);
-        zoneSelect.disabled = false;
+        currentPitchType = type;
+        zoneLabel.textContent = zoneSelections[type] ? `Zone ${zoneSelections[type]}` : 'Click a Zone';
         addBall(pitcherData[pitcher][type], type);
       } else {
         activeTypes.delete(type);
-        zoneSelect.disabled = true;
+        currentPitchType = null;
         removeBall(type);
+        zoneLabel.textContent = 'No Zone';
       }
     });
 
-    // Wrapper layout
     const wrapper = document.createElement('div');
     wrapper.className = 'checkbox-group';
     wrapper.appendChild(checkbox);
     wrapper.appendChild(label);
-    wrapper.appendChild(zoneSelect);
+    wrapper.appendChild(zoneLabel);
 
     container.appendChild(wrapper);
   }
+}
+function handleZoneClick(zoneId) {
+  if (!currentPitchType) return;
+
+  zoneSelections[currentPitchType] = parseInt(zoneId);
+  const zoneLabels = document.querySelectorAll('.zone-label');
+
+  zoneLabels.forEach(label => {
+    if (label.previousSibling?.id === currentPitchType) {
+      label.textContent = `Zone ${zoneId}`;
+    }
+  });
 }
 
 function populateDropdowns(data) {
