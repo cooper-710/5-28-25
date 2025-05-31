@@ -1,0 +1,35 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pitch Visualizer Test</title>
+  <style>
+    body { margin: 0; overflow: hidden; background-color: #111; color: white; font-family: sans-serif; }
+    #controls {
+      position: absolute; top: 20px; left: 20px; z-index: 1; padding: 15px;
+      background: rgba(0,0,0,0.75); border-radius: 8px;
+    }
+    select, button {
+      margin: 5px 0; padding: 5px; width: 120px;
+    }
+  </style>
+</head>
+<body>
+  <div id="controls">
+    <label>Team:</label><br/>
+    <select id="teamSelect"><option value="TestTeam">TestTeam</option></select><br/>
+    <label>Pitcher:</label><br/>
+    <select id="pitcherSelect"><option value="TestPitcher">TestPitcher</option></select><br/>
+    <label>Pitch Type:</label><br/>
+    <select id="pitchTypeSelect"><option value="FF">FF</option></select><br/>
+    <label>Target Zone:</label><br/>
+    <select id="zoneSelect"><option value="1">Zone 1</option></select><br/>
+    <button onclick="launchPitch()">Replay</button>
+    <button onclick="pauseAnimation()">Pause</button>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
