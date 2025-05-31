@@ -1,0 +1,54 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MLB Pitch Visualizer</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background-color: #000;
+      color: #fff;
+    }
+    #ui {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 10;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 12px;
+      border-radius: 12px;
+    }
+    select, button {
+      margin: 6px 0;
+      padding: 6px;
+      font-size: 14px;
+      width: 180px;
+    }
+  </style>
+</head>
+<body>
+  <div id="ui">
+    <div>
+      <label for="teamSelect">Team:</label><br>
+      <select id="teamSelect"></select>
+    </div>
+    <div>
+      <label for="pitcherSelect">Pitcher:</label><br>
+      <select id="pitcherSelect"></select>
+    </div>
+    <div>
+      <label for="pitchComboSelect">Pitch Type + Zone:</label><br>
+      <select id="pitchComboSelect"></select>
+    </div>
+    <div>
+      <button onclick="launchPitch()">Replay</button>
+      <button onclick="pauseAnimation()">Pause</button>
+    </div>
+  </div>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
