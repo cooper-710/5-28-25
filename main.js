@@ -1,61 +1,97 @@
 
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.148.0/build/three.module.js';
 
-let scene, camera, renderer, ball;
+let scene, camera, renderer, balls = [];
+let pitchData = {};
 const clock = new THREE.Clock();
+let playing = true;
 
 function createScene() {
   scene = new THREE.Scene();
+  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.body.appendChild(renderer.domElement);
 
+  // Lighting
   const light = new THREE.DirectionalLight(0xffffff, 1);
   light.position.set(5, 10, 7.5);
   scene.add(light);
 
-  camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-  camera.position.set(0, 2, 6);
-  camera.lookAt(0, 2, -18);
+  // Ground
+  const ground = new THREE.Mesh(
+    new THREE.PlaneGeometry(100, 100),
+    new THREE.MeshStandardMaterial({ color: 0x228B22 })
+  );
+  ground.rotation.x = -Math.PI / 2;
+  ground.position.y = 0;
+  scene.add(ground);
 
-  renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  document.body.appendChild(renderer.domElement);
+  // Home plate
+  const plate = new THREE.Mesh(
+    new THREE.BoxGeometry(0.5, 0.01, 0.5),
+    new THREE.MeshStandardMaterial({ color: 0xffa500 })
+  );
+  plate.position.set(0, 0.005, -60.5);
+  scene.add(plate);
+
+  // Strike zone
+  const zone = new THREE.Mesh(
+    new THREE.BoxGeometry(1.5, 2, 0.01),
+    new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true })
+  );
+  zone.position.set(0, 2.5, -60.5);
+  scene.add(zone);
+
+  // Camera
+  camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 200);
+  camera.position.set(0, 2, 6);
+  camera.lookAt(0, 2.5, -18);
 }
 
 function createBall() {
   const geometry = new THREE.SphereGeometry(0.145, 32, 32);
   const material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
-  ball = new THREE.Mesh(geometry, material);
-
+  const ball = new THREE.Mesh(geometry, material);
   const release = { x: 0, y: 2, z: -2.03 };
-  const velocity = { x: 0, y: 0, z: -130 }; // straight toward the zone
+  const velocity = { x: 0, y: 0, z: -130 };
   const accel = { x: 0, y: 0, z: 0 };
 
   ball.position.set(release.x, release.y, release.z);
   ball.userData = { t0: clock.getElapsedTime(), release, velocity, accel };
 
-  console.log("Ball released at:", ball.position);
+  balls.push(ball);
   scene.add(ball);
+  console.log("Ball created at", ball.position);
 }
 
 function animate() {
   requestAnimationFrame(animate);
   const now = clock.getElapsedTime();
-  const t = now - ball.userData.t0;
 
-  const { release, velocity, accel } = ball.userData;
-  const x = release.x + velocity.x * t + 0.5 * accel.x * t * t;
-  const y = release.y + velocity.y * t + 0.5 * accel.y * t * t;
-  const z = release.z + velocity.z * t + 0.5 * accel.z * t * t;
+  if (!playing) return;
 
-  ball.position.set(x, y, z);
+  for (const ball of balls) {
+    const { release, velocity, accel, t0 } = ball.userData;
+    const t = now - t0;
+    if (t > 0.45) continue;
+
+    const x = release.x + velocity.x * t + 0.5 * accel.x * t * t;
+    const y = release.y + velocity.y * t + 0.5 * accel.y * t * t;
+    const z = release.z + velocity.z * t + 0.5 * accel.z * t * t;
+
+    ball.position.set(x, y, z);
+  }
+
   renderer.render(scene, camera);
 }
 
 window.launchPitch = function () {
+  balls = [];
   createBall();
 };
 
 window.pauseAnimation = function () {
-  ball = null;
+  playing = false;
 };
 
 createScene();
