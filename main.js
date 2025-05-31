@@ -3,10 +3,15 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.148.0/build/three.m
 
 let scene, camera, renderer;
 let balls = [];
-let playing = true;
+let pitchData = {};
 const clock = new THREE.Clock();
+let playing = true;
 
-// === Setup scene ===
+async function loadPitchData() {
+  const res = await fetch('./pitch_data.json');
+  return await res.json();
+}
+
 function createScene() {
   scene = new THREE.Scene();
   renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -44,36 +49,69 @@ function createScene() {
   camera.lookAt(0, 2.5, 0);
 }
 
-// === UI setup ===
 function populateDropdowns() {
   const teamSelect = document.getElementById('teamSelect');
   const pitcherSelect = document.getElementById('pitcherSelect');
-  const pitchTypeSelect = document.getElementById('pitchTypeSelect');
+  const pitchTypeContainer = document.getElementById('pitchTypeContainer');
 
-  // Dummy options
-  teamSelect.innerHTML = '<option value="TestTeam">TestTeam</option>';
-  pitcherSelect.innerHTML = '<option value="TestPitcher">TestPitcher</option>';
-  pitchTypeSelect.innerHTML = '<option value="FF">FF</option>';
+  teamSelect.innerHTML = '';
+  Object.keys(pitchData).forEach(team => {
+    const opt = document.createElement('option');
+    opt.value = opt.textContent = team;
+    teamSelect.appendChild(opt);
+  });
+
+  teamSelect.addEventListener('change', () => {
+    const team = teamSelect.value;
+    const pitchers = Object.keys(pitchData[team] || {});
+    pitcherSelect.innerHTML = '';
+    pitchers.forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = opt.textContent = p;
+      pitcherSelect.appendChild(opt);
+    });
+    updatePitchTypes();
+  });
+
+  pitcherSelect.addEventListener('change', updatePitchTypes);
 }
 
-// === Ball creation ===
-function createBall() {
+function updatePitchTypes() {
+  const team = document.getElementById('teamSelect').value;
+  const pitcher = document.getElementById('pitcherSelect').value;
+  const pitchTypeContainer = document.getElementById('pitchTypeContainer');
+  pitchTypeContainer.innerHTML = '';
+
+  const types = Object.keys(pitchData?.[team]?.[pitcher] || {});
+  types.forEach(type => {
+    const label = document.createElement('label');
+    label.innerHTML = `<input type="checkbox" name="pitchType" value="${type}" checked> ${type}`;
+    pitchTypeContainer.appendChild(label);
+    pitchTypeContainer.appendChild(document.createElement('br'));
+  });
+}
+
+function createBall(pitch) {
   const geometry = new THREE.SphereGeometry(0.145, 32, 32);
   const material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
   const ball = new THREE.Mesh(geometry, material);
 
-  const release = { x: 0, y: 2, z: -2.03 };
-  const velocity = { x: 0, y: 0, z: -130 };
-  const accel = { x: 0, y: 0, z: 0 };
+  const releaseX = -pitch.release_pos_x;
+  const releaseY = pitch.release_pos_z + 0.65;
+  const releaseZ = -2.03;
 
-  ball.position.set(release.x, release.y, release.z);
-  ball.userData = { t0: clock.getElapsedTime(), release, velocity, accel };
+  ball.position.set(releaseX, releaseY, releaseZ);
+  ball.userData = {
+    t0: clock.getElapsedTime(),
+    release: { x: releaseX, y: releaseY, z: releaseZ },
+    velocity: { x: -pitch.vx0, y: pitch.vz0, z: pitch.vy0 },
+    accel: { x: -pitch.ax, y: pitch.az, z: pitch.ay }
+  };
 
   balls.push(ball);
   scene.add(ball);
 }
 
-// === Animation ===
 function animate() {
   requestAnimationFrame(animate);
   const now = clock.getElapsedTime();
@@ -95,17 +133,28 @@ function animate() {
   renderer.render(scene, camera);
 }
 
-// === Controls ===
 window.launchPitch = function () {
   balls = [];
-  createBall();
+  const team = document.getElementById('teamSelect').value;
+  const pitcher = document.getElementById('pitcherSelect').value;
+  const zone = document.getElementById('zoneSelect').value;
+  const checkboxes = document.querySelectorAll('input[name="pitchType"]:checked');
+
+  checkboxes.forEach(box => {
+    const type = box.value;
+    const pitch = pitchData?.[team]?.[pitcher]?.[type]?.[zone];
+    if (pitch) createBall(pitch);
+  });
 };
 
 window.pauseAnimation = function () {
   playing = false;
 };
 
-// === Init ===
-createScene();
-populateDropdowns();
-animate();
+// === Startup ===
+(async () => {
+  pitchData = await loadPitchData();
+  createScene();
+  populateDropdowns();
+  animate();
+})();
