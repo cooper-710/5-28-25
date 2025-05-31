@@ -336,6 +336,8 @@ function addBall(pitch, pitchType) {
 
   balls.push(ball);
   scene.add(ball);
+  console.log('Ball added to scene:', ball);
+  console.log('Scene children:', scene.children.length);
 }
 
 function removeBall(pitchType) {
