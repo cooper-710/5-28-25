@@ -307,7 +307,7 @@ function populateDropdowns(data) {
       comboSelect.appendChild(option);
     });
   });
-  });
+  };
 
   comboSelect.addEventListener('change', () => {
     const team = teamSelect.value;
