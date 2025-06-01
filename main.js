@@ -231,7 +231,8 @@ function clearBalls() {
   for (let ball of balls) scene.remove(ball);
   balls = [];
   activeTypes.clear();
-  document.getElementById('pitchCheckboxes').innerHTML = '';
+  const comboSelect = document.getElementById('comboSelect');
+  if (comboSelect) comboSelect.innerHTML = '';
 }
 
 function addCheckboxes(pitcherData, pitcher) {
