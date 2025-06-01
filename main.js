@@ -320,7 +320,7 @@ function populateDropdowns(data) {
       addBall(data[team][pitcher][selectedPitch], selectedPitch);
     }
   });
-  });
+  );
 
   // trigger initial load
   teamSelect.selectedIndex = 0;
