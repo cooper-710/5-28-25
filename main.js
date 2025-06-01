@@ -306,7 +306,7 @@ function populateDropdowns(data) {
       option.textContent = pitch;
       comboSelect.appendChild(option);
     });
-  }););
+  });
   });
 
   comboSelect.addEventListener('change', () => {
