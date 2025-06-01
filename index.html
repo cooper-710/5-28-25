@@ -51,13 +51,34 @@
 
     button {
       padding: 8px 16px;
-      margin-right: 8px;
+      margin-bottom: 8px;
       border-radius: 6px;
       border: none;
       background-color: #00cccc;
       color: #000;
       font-weight: bold;
       cursor: pointer;
+      width: 100%;
+    }
+
+    #pitchCheckboxes {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+
+    .checkbox-group label {
+      font-size: 13px;
     }
 
     @media (max-width: 600px) {
@@ -91,6 +112,9 @@
     <select id="comboSelect">
       <option disabled selected>Select Combo</option>
     </select>
+
+    <!-- ✅ This is the missing div -->
+    <div id="pitchCheckboxes"></div>
 
     <button id="toggleBtn">Pause</button>
     <button id="replayBtn">Replay</button>
