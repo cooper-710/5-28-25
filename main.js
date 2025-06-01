@@ -325,7 +325,6 @@ function populateDropdowns(data) {
   // trigger initial load
   teamSelect.selectedIndex = 0;
   teamSelect.dispatchEvent(new Event('change'));
-}
 
 
 function addBall(pitch, pitchType) {
