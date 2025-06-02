@@ -177,14 +177,12 @@ function setupScene() {
   plateLight.position.set(0, 3, -60.5);
   scene.add(plateLight);
 
+    new THREE.MeshStandardMaterial({ color: 0x1e472d, roughness: 1 })
+  });
   const ground = new THREE.Mesh(
     new THREE.PlaneGeometry(200, 200),
     new THREE.MeshStandardMaterial({ color: 0x1e472d, roughness: 1 })
-  });
   );
-  scene.add(ground);
-  ground.receiveShadow = true;
-
   const zone = new THREE.LineSegments(
     new THREE.EdgesGeometry(new THREE.PlaneGeometry(1.42, 2.0)),
     new THREE.LineBasicMaterial({ color: 0xffffff })
@@ -237,6 +235,18 @@ function addCheckboxes(pitcherData) {
         } else {
           removeBall(combo);
         }
+      });
+      const label = document.createElement('label');
+      label.htmlFor = combo;
+      label.textContent = combo;
+      const wrapper = document.createElement('div');
+      wrapper.className = 'checkbox-group';
+      wrapper.appendChild(checkbox);
+      wrapper.appendChild(label);
+      container.appendChild(wrapper);
+    }
+  }
+}
   });
       const label = document.createElement('label');
       label.htmlFor = combo;
