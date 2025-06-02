@@ -261,7 +261,7 @@ function addCheckboxes(pitcherData) {
     wrapper.appendChild(label);
 
     container.appendChild(wrapper);
-  }
+  
 }
 function populateDropdowns(data) {
   const teamSelect = document.getElementById('teamSelect');
