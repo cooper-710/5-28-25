@@ -450,7 +450,7 @@ function addCheckboxes(pitcherData) {
 
   for (const pitchType in pitcherData) {
 
-    for (const zone of Object.keys(pitcherData[pitchType]).filter(z => ['1','2','3','4','5','6','7','8','9'].includes(z))) {
+for (const zone of Object.keys(pitcherData[pitchType]).filter(z => [1,2,3,4,5,6,7,8,9].includes(parseInt(z)))) {
       const combo = `${pitchType} ${zone}`;
 
       const checkbox = document.createElement('input');
