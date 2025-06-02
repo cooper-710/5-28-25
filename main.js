@@ -246,10 +246,10 @@ function addCheckboxes(pitcherData) {
     }
   }
 }
-      );
-    }
-  }
-}
+      ;
+    
+  
+
     ;
 
   
