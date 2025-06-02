@@ -252,8 +252,8 @@ function addCheckboxes(pitcherData) {
     ;
 
     const label = document.createElement('label');
-    label.htmlFor = type;
-    label.textContent = type;
+    label.htmlFor = combo;
+    label.textContent = combo;
 
     const wrapper = document.createElement('div');
     wrapper.className = 'checkbox-group';
