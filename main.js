@@ -249,7 +249,7 @@ function addCheckboxes(pitcherData) {
     }
   }
 }
-    });
+    );
 
     const label = document.createElement('label');
     label.htmlFor = type;
