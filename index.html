@@ -2,45 +2,54 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>3D Pitch Visualizer</title>
+  <title>Pitch Visualizer</title>
   <style>
     body {
       margin: 0;
       overflow: hidden;
+      background: #000;
+      color: white;
       font-family: 'Segoe UI', sans-serif;
-      background-color: #121212;
-    }
-    canvas {
-      display: block;
     }
     #controls {
       position: absolute;
-      top: 10px;
-      left: 10px;
-      background: rgba(0, 0, 0, 0.5);
+      top: 12px;
+      left: 12px;
+      background: rgba(0, 0, 0, 0.4);
       padding: 16px;
       border-radius: 12px;
+      z-index: 100;
+      max-width: 90vw;
       color: white;
-      max-width: 300px;
-      z-index: 10;
     }
     label, select, button {
       display: block;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
+    }
+    select, button {
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: none;
       font-size: 14px;
-      width: 100%;
+      background: #333;
+      color: white;
     }
     #pitchCheckboxes {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 4px;
+      gap: 6px;
+      margin-top: 12px;
     }
     .checkbox-group {
       display: flex;
       align-items: center;
-      gap: 4px;
-      font-size: 13px;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+    canvas {
+      display: block;
     }
   </style>
 </head>
@@ -52,13 +61,14 @@
     <label for="pitcherSelect">Select Pitcher:</label>
     <select id="pitcherSelect"></select>
 
-    <label for="pitchCheckboxes">Select Pitch + Zone:</label>
-    <div id="pitchCheckboxes"></div>
-
     <button id="toggleBtn">Pause</button>
     <button id="replayBtn">Replay</button>
+
+    <div id="pitchCheckboxes"></div>
   </div>
+
   <canvas id="three-canvas"></canvas>
-  <script type="module" src="main.js"></script>
+
+  <script type="module" src="./main.js"></script>
 </body>
 </html>
