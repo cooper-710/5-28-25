@@ -493,13 +493,13 @@ function addCheckboxes(pitcherData) {
 
 }
 
-      });
+      ;
 
-    }
+    
 
-  }
+  
 
-}
+
 
     ;
 
