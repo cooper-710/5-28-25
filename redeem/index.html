@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Enter Access Token</title>
+  <style>
+    body {
+      background: #000;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      height: 100vh;
+      font-family: sans-serif;
+    }
+    input {
+      font-size: 16px;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      width: 250px;
+      margin-top: 10px;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #fff;
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h2>Enter Access Token</h2>
+  <input type="text" id="tokenInput" placeholder="Paste token here" />
+  <button onclick="go()">Submit</button>
+
+  <script>
+    function go() {
+      const token = document.getElementById('tokenInput').value.trim();
+      if (token) {
+        window.location.href = `/?token=${token}`;
+      }
+    }
+  </script>
+</body>
+</html>
